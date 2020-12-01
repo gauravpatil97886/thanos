@@ -22,9 +22,18 @@ export interface BlockListProps {
 export const BlocksContent: FC<{ data: BlockListProps }> = ({ data }) => {
   const [selectedBlock, selectBlock] = useState<Block>();
 
-  const { blocks, label, err } = data;
+  const { blocks, label, err, refreshedAt } = data;
 
   const blockPools = useMemo(() => sortBlocks(blocks, label), [blocks, label]);
+
+  const blockCount: { [key: string]: number } = {};
+
+  Object.keys(blockPools).forEach(key => {
+    Object.values(blockPools[key]).forEach(list => {
+      blockCount[key] = blockCount[key] ? blockCount[key] + list.length : list.length;
+    });
+  });
+
   const [gridMinTime, gridMaxTime] = useMemo(() => {
     if (!err && blocks.length > 0) {
       let gridMinTime = blocks[0].minTime;
@@ -55,33 +64,42 @@ export const BlocksContent: FC<{ data: BlockListProps }> = ({ data }) => {
   };
 
   if (err) return <UncontrolledAlert color="danger">{err.toString()}</UncontrolledAlert>;
-
+  const date = new Date(refreshedAt).toLocaleString().split(',');
   return (
     <>
       {blocks.length > 0 ? (
-        <div className={styles.container}>
-          <div className={styles.grid}>
-            <div className={styles.sources}>
-              {Object.keys(blockPools).map(pk => (
-                <SourceView
-                  key={pk}
-                  data={blockPools[pk]}
-                  title={pk}
-                  selectBlock={selectBlock}
-                  gridMinTime={viewMinTime}
-                  gridMaxTime={viewMaxTime}
-                />
-              ))}
-            </div>
-            <TimeRange
-              gridMinTime={gridMinTime}
-              gridMaxTime={gridMaxTime}
-              viewMinTime={viewMinTime}
-              viewMaxTime={viewMaxTime}
-              onChange={setViewTime}
-            />
+        <div>
+          <div className={styles.blockStats}>
+            <span>
+              Last Refresh on {date[0]} at {date[1]}
+            </span>
+            <span>Total Blocks: {blocks.length}</span>
           </div>
-          <BlockDetails selectBlock={selectBlock} block={selectedBlock} />
+          <div className={styles.container}>
+            <div className={styles.grid}>
+              <div className={styles.sources}>
+                {Object.keys(blockPools).map(pk => (
+                  <SourceView
+                    key={pk}
+                    data={blockPools[pk]}
+                    title={pk}
+                    selectBlock={selectBlock}
+                    gridMinTime={viewMinTime}
+                    gridMaxTime={viewMaxTime}
+                    blockCount={blockCount}
+                  />
+                ))}
+              </div>
+              <TimeRange
+                gridMinTime={gridMinTime}
+                gridMaxTime={gridMaxTime}
+                viewMinTime={viewMinTime}
+                viewMaxTime={viewMaxTime}
+                onChange={setViewTime}
+              />
+            </div>
+            <BlockDetails selectBlock={selectBlock} block={selectedBlock} />
+          </div>
         </div>
       ) : (
         <UncontrolledAlert color="warning">No blocks found.</UncontrolledAlert>
