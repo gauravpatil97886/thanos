@@ -121,14 +121,34 @@
 }
 
 .title > span {
-  display: block;
-  width: 8vw;
+  display: inline-block;
+  width: 10vw;
   margin: 0;
+  padding: 2px 2px;
   text-align: center;
   text-overflow: ellipsis;
   overflow: hidden;
   box-sizing: border-box;
   border: 1px solid;
+  border-radius: 8px;
+}
+
+.title > span:hover {
+  background-color: #555555;
+  color: white;
+}
+
+.popup {
+  background-color: white;
+  display: inline-block;
+  margin: 10px;
+  padding: 10px 10px;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid;
+  border-radius: 16px;
 }
 
 .rowsContainer {

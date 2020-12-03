@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Block, BlocksPool } from './block';
 import { BlockSpan } from './BlockSpan';
 import styles from './blocks.module.css';
+import { Popup } from 'semantic-ui-react';
 
 export const BlocksRow: FC<{
   blocks: Block[];
@@ -32,9 +33,11 @@ export const SourceView: FC<SourceViewProps> = ({ data, title, gridMaxTime, grid
     <>
       <div className={styles.source}>
         <div className={styles.title} title={title}>
-          <span>{title}</span>
-          <span>Blocks Count: {blockCount[title]}</span>
+          <Popup trigger={<span>{title}</span>} position="right center">
+            <span className={styles.popup}>Blocks Count: {blockCount[title]}</span>
+          </Popup>
         </div>
+
         <div className={styles.rowsContainer}>
           {Object.keys(data).map(k => (
             <BlocksRow
