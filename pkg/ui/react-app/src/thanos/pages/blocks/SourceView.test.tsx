@@ -22,7 +22,7 @@ describe('Blocks SourceView', () => {
   const sourceView = mount(<SourceView {...defaultProps} />);
 
   it('renders a paragraph with title', () => {
-    const title = sourceView.find('div > span').first();
+    const title = sourceView.find('div > Popup').first();
     expect(title).toHaveLength(1);
     expect(title.text()).toEqual(source);
   });
